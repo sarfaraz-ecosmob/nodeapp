@@ -1,0 +1,17 @@
+---
+  - name: "Playing with Ansible and Git"
+    hosts: localhost
+    connection: local 
+    tasks:
+
+    - name: Docker build
+      command: docker build -t nodeapp .
+
+    - name: Docker login
+      command: docker login http://13.234.117.246:9001/repository/docker-hosted/ --username=admin --password=nexus@123 
+
+    - name: Docker tag
+      command: docker tag nodeapp 13.234.117.246:9001/docker-hosted/nodeapp
+
+    - name: Docker push
+      command: docker push 13.234.117.246:9001/docker-hosted/nodeapp
