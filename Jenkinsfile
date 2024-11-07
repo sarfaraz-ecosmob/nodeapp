@@ -27,17 +27,16 @@ pipeline {
         }
       }
     }
-
-    stage('SonarQube Analysis') {
+   stage('Sonarqube Analysis') {
       steps {
         script {
-          def scannerHome = tool 'sonarscanner'
-          withSonarQubeEnv(credentialsId: SONAR_CREDENTIAL) {
-            sh "${scannerHome}/bin/sonar-scanner \
-                -Dsonar.projectKey=nodeapp \
-                -Dsonar.sources=. \
-                -Dsonar.host.url=http://172.16.16.71:9000 \
-                -Dsonar.login=${SONAR_CREDENTIAL}"
+        def scannerHome = tool 'sonarscanner';
+        withSonarQubeEnv(credentialsId: 'sonarqube') {
+          sh  "${tool("sonarscanner")}/bin/sonar-scanner \
+              -Dsonar.projectKey=nodeapp \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=http://172.16.16.71:9000 \
+              -Dsonar.login=sqa_4a07fa2168d3c8befd2044aa88aad9081f04729d"
           }
         }
       }
