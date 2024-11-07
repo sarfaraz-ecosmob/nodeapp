@@ -3,6 +3,7 @@ pipeline {
 
   environment {
     DOCKER_IMAGE_NAME = "sarfecosmob/nodeapp"
+    DOCKER_TAG = "build-${BUILD_NUMBER}" // Use BUILD_NUMBER for unique tagging
     REGISTRY_CREDENTIAL = 'dockerhublogin'
     SONAR_CREDENTIAL = 'sonarqube'
   }
@@ -18,13 +19,10 @@ pipeline {
     stage('Build and Push Docker Image') {
       steps {
         script {
-          // Use the Jenkins BUILD_NUMBER as the version tag for the Docker image
-          env.DOCKER_TAG = "build-${BUILD_NUMBER}"
-          
+          // Authenticate, build, and push within the same stage
           docker.withRegistry('https://registry.hub.docker.com', REGISTRY_CREDENTIAL) {
-            // Build and push image inside the withRegistry block
-            env.DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
-            env.DOCKER_IMAGE.push(env.DOCKER_TAG)
+            def dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
+            dockerImage.push(DOCKER_TAG) // Push with the unique tag
           }
         }
       }
