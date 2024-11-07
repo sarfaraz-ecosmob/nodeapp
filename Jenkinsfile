@@ -27,9 +27,12 @@ pipeline {
     }
 
     stage('Push Docker Image') {
+      environment {
+         registryCredential = 'dockerhublogin'
+         }
       steps {
         script {
-          docker.withRegistry('https://registry.hub.docker.com', REGISTRY_CREDENTIAL) {
+          docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
             env.DOCKER_IMAGE.push(env.DOCKER_TAG)
           }
         }
