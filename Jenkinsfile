@@ -15,24 +15,15 @@ pipeline {
       }
     }
 
-    stage('Build Docker Image') {
+    stage('Build and Push Docker Image') {
       steps {
         script {
           // Use the Jenkins BUILD_NUMBER as the version tag for the Docker image
           env.DOCKER_TAG = "build-${BUILD_NUMBER}"
-          env.DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
-          echo "Built Docker image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}"
-        }
-      }
-    }
-
-    stage('Push Docker Image') {
-      environment {
-         registryCredential = 'dockerhublogin'
-         }
-      steps {
-        script {
-          docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+          
+          docker.withRegistry('https://registry.hub.docker.com', REGISTRY_CREDENTIAL) {
+            // Build and push image inside the withRegistry block
+            env.DOCKER_IMAGE = docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
             env.DOCKER_IMAGE.push(env.DOCKER_TAG)
           }
         }
