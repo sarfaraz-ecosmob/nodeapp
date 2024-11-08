@@ -16,7 +16,18 @@ pipeline {
       }
     }
 
-    stage('Sonarqube Analysis') {
+    stage('Build and Push Docker Image') {
+      steps {
+        script {
+          // Authenticate, build, and push within the same stage
+          docker.withRegistry('https://registry.hub.docker.com', REGISTRY_CREDENTIAL) {
+            def dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
+            dockerImage.push(DOCKER_TAG) // Push with the unique tag
+          }
+        }
+      }
+    }
+   stage('Sonarqube Analysis') {
       steps {
         script {
         def scannerHome = tool 'sonarscanner';
@@ -26,18 +37,6 @@ pipeline {
               -Dsonar.sources=. \
               -Dsonar.host.url=http://172.16.16.71:9000 \
               -Dsonar.login=sqa_4a07fa2168d3c8befd2044aa88aad9081f04729d"
-          }
-        }
-      }
-    }
-
-    stage('Build and Push Docker Image') {
-      steps {
-        script {
-          // Authenticate, build, and push within the same stage
-          docker.withRegistry('https://registry.hub.docker.com', REGISTRY_CREDENTIAL) {
-            def dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
-            dockerImage.push(DOCKER_TAG) // Push with the unique tag
           }
         }
       }
