@@ -1,12 +1,11 @@
 pipeline {
-  agent any
 
   environment {
-    DOCKER_IMAGE_NAME = "sarfecosmob/nodeapp"
-    DOCKER_TAG = "build-${BUILD_NUMBER}" // Use BUILD_NUMBER for unique tagging
-    REGISTRY_CREDENTIAL = 'dockerhublogin'
-    SONAR_CREDENTIAL = 'sonarqube'
+    dockerimagename = "sarfecosmob/nodeapp"
+    dockerImage = ""
   }
+
+  agent any
 
   stages {
 
@@ -16,18 +15,29 @@ pipeline {
       }
     }
 
-    stage('Build and Push Docker Image') {
-      steps {
+    stage('Build image') {
+      steps{
         script {
-          // Authenticate, build, and push within the same stage
-          docker.withRegistry('https://registry.hub.docker.com', REGISTRY_CREDENTIAL) {
-            def dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
-            dockerImage.push(DOCKER_TAG) // Push with the unique tag
+          dockerImage = docker.build dockerimagename
+        }
+      }
+    }
+
+    stage('Pushing Image') {
+      environment {
+               registryCredential = 'dockerhublogin'
+           }
+      steps{
+        script {
+          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+            dockerImage.push("v1")
           }
         }
       }
     }
-   stage('Sonarqube Analysis') {
+
+
+    stage('Sonarqube Analysis') {
       steps {
         script {
         def scannerHome = tool 'sonarscanner';
@@ -41,6 +51,7 @@ pipeline {
         }
       }
     }
-  }
-}
 
+  }
+
+}
