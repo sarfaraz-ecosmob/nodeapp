@@ -17,7 +17,7 @@ spec:
       containers:
       - name: nodeserver
         imagePullPolicy: IfNotPresent 
-        image: sarfecosmob/nodeapp:build-24
+        image: sarfecosmob/nodeapp:build-27
         ports:
         - containerPort: 3000
         
