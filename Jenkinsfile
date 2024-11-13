@@ -58,8 +58,9 @@ pipeline {
           sh "rm -rf argocd"
           sh "git clone https://github.com/sarfaraz-ecosmob/argocd.git"
           dir('argocd') {
-            sh "sed -i \"s|image: sarfecosmob/nodeapp:build-[0-9]*|image: sarfecosmob/nodeapp:${DOCKER_TAG}|g\" k8s/deploymentservice.yml"
-            sh "git config user.email 'sarfaraz.shaikh@ecosmob.com'"
+            #sh "sed -i \"s|image: sarfecosmob/nodeapp:build-[0-9]*|image: sarfecosmob/nodeapp:${DOCKER_TAG}|g\" k8s/deploymentservice.yml"
+            sh 'sed -i \'s/image: sarfecosmob\/nodeapp:build-[0-9]*-[0-9]*/image: sarfecosmob\/nodeapp:${DOCKER_TAG}/g\' k8s/deploymentservice.yml'
+	    sh "git config user.email 'sarfaraz.shaikh@ecosmob.com'"
             sh "git config user.name 'sarfaraz-ecosmob'"
             sh "git add -A ."
             sh "git commit -m 'Update image version to: v${DOCKER_TAG}'"
