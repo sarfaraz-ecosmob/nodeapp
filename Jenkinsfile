@@ -43,6 +43,14 @@ pipeline {
       }
     }
 
+    stage('Wait') {
+            steps {
+                echo 'Waiting for 30 seconds...'
+                sleep time: 30, unit: 'SECONDS'
+            }
+        }
+
+
     stage('Update Manifest') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'GitHubCredentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')])
