@@ -59,7 +59,7 @@ pipeline {
           sh "git clone https://github.com/sarfaraz-ecosmob/argocd.git"
           dir('argocd') {
 	    sh """
-  TAG="${DOCKER_TAG}"
+  export TAG="${DOCKER_TAG}"
   sed -i "s|image: sarfecosmob/nodeapp:build-[0-9]*|image: sarfecosmob/nodeapp:${TAG}|g" k8s/deploymentservice.yml
 """
 	    sh "git config user.email 'sarfaraz.shaikh@ecosmob.com'"
