@@ -58,7 +58,7 @@ pipeline {
           sh "rm -rf argocd"
           sh "git clone https://github.com/sarfaraz-ecosmob/argocd.git"
           dir('argocd') {
-	    sh "sed -i 's/build-*/${DOCKER_TAG}/g' k8s/deploymentservice.yml"
+	    sh "sed -i 's/build-[0-9][0-9]/${DOCKER_TAG}/g' k8s/deploymentservice.yml"
             sh "git config user.email 'sarfaraz.shaikh@ecosmob.com'"
             sh "git config user.name 'sarfaraz-ecosmob'"
             sh "git add -A ."
