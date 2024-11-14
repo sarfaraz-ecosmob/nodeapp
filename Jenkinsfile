@@ -17,7 +17,7 @@ pipeline {
       }
     }
 
-    stage('Sonarqube Analysis') {
+    stage('Code Analysis at Sonarqube') {
       steps {
         script {
           def scannerHome = tool 'sonarscanner'
@@ -32,7 +32,7 @@ pipeline {
       }
     }
 
-    stage('Build and Push Docker Image') {
+    stage('Build Docker Image') {
       steps {
         script {
           docker.withRegistry('https://registry.hub.docker.com', REGISTRY_CREDENTIAL) {
@@ -43,15 +43,15 @@ pipeline {
       }
     }
 
-    stage('Wait') {
+    stage('Push Docker Image') {
             steps {
                 echo 'Waiting for 30 seconds...'
-                sleep time: 30, unit: 'SECONDS'
+                sleep time: 10, unit: 'SECONDS'
             }
         }
 
 
-    stage('Update Manifest') {
+    stage('Deployment Initiated') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'GitHubCredentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')])
          {
